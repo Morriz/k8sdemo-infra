@@ -25,12 +25,12 @@ While waiting add existing key/cert information to the `ssl/*.your.com*` files, 
 
 ### 1.3 Terraform configuration, plan/apply
 
-After that configure the `terraform/variables.tf` file, and go through the other *.tf files to see if it fits your needs.
-Special area of interest is `terraform/S3.tf`, as it involves cloudfront distribution ids to give rights to corresponding buckets.
+After that configure the `terraform/variables.tf` file, and go through the other \*.tf files to see if it fits your needs.
+Special area of interest is `terraform/s3.tf`, as it involves cloudfront distribution ids to give rights to corresponding buckets.
 Terraform does not yet provide cloudfront provisioning, so that has to be done by hand.
 Then *from that folder* run `terraform plan|apply` to get our infra in the desired state. This will result in a pool of CoreOS nodes that either act as MASTER or WORKER, and some external persistent volumes for Mongo, and possible logging and metrics.
 
-After resource creation Terraform provisions the CoreOS nodes with their `user-data/*` scripts. These contain their consecutive CoreOS cloud-configs, which in turn will retrieve the kubernetes `provisioning/*` artifacts from `S3://yourcom-infra/`. The contents of our `provisioning/` folder can be conveniently synced by executing `bin/sync-S3.sh` from the root of this project (wont't work otherwise!).
+After resource creation Terraform provisions the CoreOS nodes with their `user-data/*` scripts. These contain their consecutive CoreOS cloud-configs, which in turn will retrieve the kubernetes `provisioning/*` artifacts from `S3://yourcom-infra/`. The contents of our `provisioning/` folder can be conveniently synced by executing `bin/sync-s3.sh` from the root of this project (wont't work otherwise!).
 The CoreOS nodes will pick up on changes to these upon install/reboot, so you can manipulate and upload the artifacts to S3, reboot the node(s) and see the changes. This is usually a scenario for upgrading kubernetes or their manifests, and should NEVER be done without a failover node on production!
 To do this, boot an extra node, wait till it's ready, then signal ETCD to disable the old node, wait till Kubernetes has moved all the apps to the new node, and then terminate the old node. See [Kubernetes docs on upgrading](https://coreos.com/kubernetes/docs/latest/kubernetes-upgrade.html) for details.
 
@@ -94,25 +94,25 @@ Then to get the entire app suite running on acceptance, first create the secrets
 This step assumes the needed vars to be exported beforehand:
 
     bin/create_api-secrets.yaml.sh
-    kubectl create -f k8s/$APP_ENV/api-secrets.yaml
+    k create -f k8s/$APP_ENV/api-secrets.yaml
 
 Then boot the app suite itself:
 
-    kubectl create -f k8s/app/$APP_ENV
+    k create -f k8s/app/$APP_ENV
 
 Notice that kubelet will automatically create AWS loadbalancers for kubernetes services of type `LoadBalancer`.
 IMPORTANT: These loadbalancers will not be removed when the nodes are destroyed, so the services either need to be brought down first, of you have to remove the loadbalancers from the AWS console.
 
 ## 4. Monitoring & management
 
-These apps are only reachable through a proxy to the cluster, so start one on port 8010 with:
+These apps are only reachable through a proxy to the cluster, so start one on port 8010 with
 
-    kubectl-aws proxy 8010 &
+    kp
 
-(or just `kp` to start one on the default port 8001), and `kk` to kill any running proxy.
+(or `k proxy 8010 &` to start one on port 8010), and `kk` to kill any running proxy.
 
 IMPORTANT: be aware that the running proxy will either target ACC or PROD, but you will not see that from just looking at the url.
-To see what cluster is being targeted, type `kcg`.
+Again, to see what cluster is being targeted, type `kcg`.
 
 ### 4.1 Dashboard
 
@@ -135,8 +135,7 @@ Kubernetes will boot a new pod automatically in a couple of seconds and the app 
 
 ### 4.4 Mongo Express
 
-To see the data in mongo we can go to:
-* [mongo-express web ui](localhost:8001/api/v1/proxy/namespaces/default/services/mongo-express/)
+To see the data in mongo we can go to the [mongo-express web ui](http://localhost:8001/api/v1/proxy/namespaces/default/services/mongo-express/)
 
 ## 5. Fleet
 
