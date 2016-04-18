@@ -10,9 +10,9 @@ resource "template_file" "controller-acc-user-data" {
     DNS_SERVICE_IP = "${var.dns-service-ip-acc}"
     K8S_SERVICE_IP = "${var.k8s-service-ip-acc}"
     ARTIFACT_URL = "${var.artifact-url-acc}"
-    CA_PEM = "${base64encode(file("../ssl/acc-k8s/ca.pem"))}"
-    APISERVER_PEM = "${base64encode(file("../ssl/acc-k8s/apiserver.pem"))}"
-    APISERVERKEY_PEM = "${base64encode(file("../ssl/acc-k8s/apiserver-key.pem"))}"
+    CA_PEM = "${base64encode(file("../ssl/acc/ca.pem"))}"
+    APISERVER_PEM = "${base64encode(file("../ssl/acc/apiserver.pem"))}"
+    APISERVERKEY_PEM = "${base64encode(file("../ssl/acc/apiserver-key.pem"))}"
   }
 }
 
@@ -26,9 +26,9 @@ resource "template_file" "worker-acc-user-data" {
     K8S_VER = "${var.k8s-ver-acc}"
     DNS_SERVICE_IP = "${var.dns-service-ip-acc}"
     ARTIFACT_URL = "${var.artifact-url-acc}"
-    CA_PEM = "${base64encode(file("../ssl/acc-k8s/ca.pem"))}"
-    WORKER_PEM = "${base64encode(file("../ssl/acc-k8s/worker.pem"))}"
-    WORKERKEY_PEM = "${base64encode(file("../ssl/acc-k8s/worker-key.pem"))}"
+    CA_PEM = "${base64encode(file("../ssl/acc/ca.pem"))}"
+    WORKER_PEM = "${base64encode(file("../ssl/acc/worker.pem"))}"
+    WORKERKEY_PEM = "${base64encode(file("../ssl/acc/worker-key.pem"))}"
   }
 }
 
@@ -44,9 +44,9 @@ resource "template_file" "controller-prod-user-data" {
     DNS_SERVICE_IP = "${var.dns-service-ip-prod}"
     K8S_SERVICE_IP = "${var.k8s-service-ip-prod}"
     ARTIFACT_URL = "${var.artifact-url-prod}"
-    CA_PEM = "${base64encode(file("../ssl/prod-k8s/ca.pem"))}"
-    APISERVER_PEM = "${base64encode(file("../ssl/prod-k8s/apiserver.pem"))}"
-    APISERVERKEY_PEM = "${base64encode(file("../ssl/prod-k8s/apiserver-key.pem"))}"
+    CA_PEM = "${base64encode(file("../ssl/prod/ca.pem"))}"
+    APISERVER_PEM = "${base64encode(file("../ssl/prod/apiserver.pem"))}"
+    APISERVERKEY_PEM = "${base64encode(file("../ssl/prod/apiserver-key.pem"))}"
   }
 }
 
@@ -60,8 +60,8 @@ resource "template_file" "worker-prod-user-data" {
     K8S_VER = "${var.k8s-ver-prod}"
     DNS_SERVICE_IP = "${var.dns-service-ip-prod}"
     ARTIFACT_URL = "${var.artifact-url-prod}"
-    CA_PEM = "${base64encode(file("../ssl/prod-k8s/ca.pem"))}"
-    WORKER_PEM = "${base64encode(file("../ssl/prod-k8s/worker.pem"))}"
-    WORKERKEY_PEM = "${base64encode(file("../ssl/prod-k8s/worker-key.pem"))}"
+    CA_PEM = "${base64encode(file("../ssl/prod/ca.pem"))}"
+    WORKER_PEM = "${base64encode(file("../ssl/prod/worker.pem"))}"
+    WORKERKEY_PEM = "${base64encode(file("../ssl/prod/worker-key.pem"))}"
   }
 }

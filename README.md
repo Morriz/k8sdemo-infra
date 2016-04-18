@@ -13,9 +13,10 @@ All infra is hosted by AWS. We use the following stack, and in this particular o
 ### 1.1 Global search and rename
 
 Since this is a demo application, it is needed to change all references to 'yourcom' and 'your.com' to those of your own choosing.
-I suggest to just do a search and replace (also some file names in `ssl/`):
+I suggest to just do a search in all the files and replace (also some file names in `ssl/`):
 
 yourcom -> unique name without dots, which will result in S3 bucket creation of ${yourcom}-infra/dev/acc/prod
+
 your.com -> your base domain
 
 ### 1.2 Generating certificates, keys and kubeconfig
@@ -34,10 +35,17 @@ After resource creation Terraform provisions the CoreOS nodes with their `user-d
 The CoreOS nodes will pick up on changes to these upon install/reboot, so you can manipulate and upload the artifacts to S3, reboot the node(s) and see the changes. This is usually a scenario for upgrading kubernetes or their manifests, and should NEVER be done without a failover node on production!
 To do this, boot an extra node, wait till it's ready, then signal ETCD to disable the old node, wait till Kubernetes has moved all the apps to the new node, and then terminate the old node. See [Kubernetes docs on upgrading](https://coreos.com/kubernetes/docs/latest/kubernetes-upgrade.html) for details.
 
+### 1.4 Register node hostnames / cnames
+
+If you would like to avoid looking up your node's ip adresses all the time (i.e. for ssh access), then I suggest you register `acc-k8s.your.com` to point to the ACC master, and `prod-k8s.your.com` for PROD.  
+Also, since the WEB app is exposed via AWS Elastic Load Balancers, you probably want to register domains like (acc-)app.your.com to point to your the ACC and PROD version of that WEB elb.
+ 
 ## 2. Kubernetes configuration stage
 
 When kubernetes is running we can interact with it through the `kubectl` client. I strongly suggest you install the `lib/aliases` as well, as we will be using them in this readme.
-By using the alias `kcg` (I thought of it like _kubectl context get_) you can see what cluster kubectl is currently tied to. It is important to ALWAYS BE AWARE of the cluster you are operating on. 
+By using the alias `kcg` (I thought of it like _kubectl context get_) you can see what cluster kubectl is currently tied to. It is important to ALWAYS BE AWARE of the cluster you are operating on.
+
+To switch to PROD do `kcu prod` (kubectl config use-context).
 
 ### 2.1 Install kubectl client
 
