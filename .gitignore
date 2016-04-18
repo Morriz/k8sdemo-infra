@@ -1,0 +1,6 @@
+.idea
+.DS_Store
+terraform.tfvars*
+k8s/secrets/
+k8s/kubeconfig
+

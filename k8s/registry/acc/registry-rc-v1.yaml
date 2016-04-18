@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: kube-registry-v1
+  namespace: kube-system
+  labels:
+    k8s-app: kube-registry-v1
+    version: v1
+    kubernetes.io/cluster-service: 'true'
+spec:
+  replicas: 1
+  selector:
+    k8s-app: kube-registry-v1
+    version: v1
+  template:
+    metadata:
+      labels:
+        k8s-app: kube-registry-v1
+        version: v1
+        kubernetes.io/cluster-service: 'true'
+    spec:
+      containers:
+      - name: registry
+        image: registry:0.9.1
+        env:
+        - name: REGISTRY_HTTP_HOST
+          value: https://acc-reg.your.com
+        - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+          value: /var/lib/registry
+        - name: REGISTRY_DELETE_ENABLED
+          value: 'true'
+        ports:
+        - containerPort: 5000
+          name: registry
+          protocol: TCP
+        volumeMounts:
+        - name: image-store-v1
+          mountPath: /var/lib/registry
+      volumes:
+      - name: image-store-v1
+        awsElasticBlockStore:
+          fsType: ext4
+          volumeID: vol-7700f5af

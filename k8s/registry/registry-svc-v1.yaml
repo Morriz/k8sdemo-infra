@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: kube-registry-v1
+  namespace: kube-system
+  labels:
+    k8s-app: kube-registry-v1
+    kubernetes.io/cluster-service: 'true'
+spec:
+  selector:
+    k8s-app: kube-registry-v1
+  ports:
+  - port: 5000
+    name: registry-http
+    targetPort: registry
+    protocol: TCP

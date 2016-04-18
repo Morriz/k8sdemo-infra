@@ -1,0 +1,60 @@
+#cloud-config
+coreos:
+  update:
+    reboot-strategy: best-effort
+    group: alpha
+    server: https://customer.update.core-os.net/v1/update/
+
+  flannel:
+    interface: $private_ipv4
+
+  etcd2:
+    name: controller
+    advertise-client-urls: http://$private_ipv4:2379
+    initial-advertise-peer-urls: http://$private_ipv4:2380
+    listen-client-urls: http://0.0.0.0:2379
+    listen-peer-urls: http://0.0.0.0:2380
+    initial-cluster: controller=http://$private_ipv4:2380
+
+  units:
+  - name: etcd2.service
+    command: start
+
+  - name: install-controller.service
+    command: start
+    content: |
+      [Service]
+      ExecStart=/bin/bash /tmp/install-controller.sh
+      Type=oneshot
+
+ssh_authorized_keys:
+${authorized_keys}
+
+write_files:
+- path: /run/coreos-kubernetes/options.env
+  content: |
+    K8S_VER=${K8S_VER}
+    ETCD_ENDPOINTS=${ETCD_ENDPOINTS}
+    ARTIFACT_URL=${ARTIFACT_URL}
+    SERVICE_NETWORK=${SERVICE_NETWORK}
+    POD_NETWORK=${POD_NETWORK}
+    K8S_SERVICE_IP=${K8S_SERVICE_IP}
+    DNS_SERVICE_IP=${DNS_SERVICE_IP}
+
+- path: /tmp/install-controller.sh
+  content: |
+    #!/bin/bash
+
+    exec bash -c "$(curl --fail --silent --show-error --location '${ARTIFACT_URL}/scripts/install-controller.sh')"
+
+- path: /etc/kubernetes/ssl/ca.pem
+  encoding: base64
+  content: ${CA_PEM}
+
+- path: /etc/kubernetes/ssl/apiserver.pem
+  encoding: base64
+  content: ${APISERVER_PEM}
+
+- path: /etc/kubernetes/ssl/apiserver-key.pem
+  encoding: base64
+  content: ${APISERVERKEY_PEM}

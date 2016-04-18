@@ -1,0 +1,48 @@
+#cloud-config
+coreos:
+  update:
+    reboot-strategy: best-effort
+    group: alpha
+    server: https://customer.update.core-os.net/v1/update/
+
+  flannel:
+    interface: $private_ipv4
+    etcd_endpoints: http://${CONTROLLER_IP}:2379
+
+  units:
+  - name: install-worker.service
+    command: start
+    content: |
+      [Service]
+      ExecStart=/bin/bash /tmp/install-worker.sh
+      Type=oneshot
+
+ssh_authorized_keys:
+${authorized_keys}
+
+write_files:
+- path: /run/coreos-kubernetes/options.env
+  content: |
+    K8S_VER=${K8S_VER}
+    ETCD_ENDPOINTS=${ETCD_ENDPOINTS}
+    CONTROLLER_ENDPOINT=https://${CONTROLLER_IP}
+    ARTIFACT_URL=${ARTIFACT_URL}
+    DNS_SERVICE_IP=${DNS_SERVICE_IP}
+
+- path: /tmp/install-worker.sh
+  content: |
+    #!/bin/bash
+
+    exec bash -c "$(curl --fail --silent --show-error --location '${ARTIFACT_URL}/scripts/install-worker.sh')"
+
+- path: /etc/kubernetes/ssl/ca.pem
+  encoding: base64
+  content: ${CA_PEM}
+
+- path: /etc/kubernetes/ssl/worker.pem
+  encoding: base64
+  content: ${WORKER_PEM}
+
+- path: /etc/kubernetes/ssl/worker-key.pem
+  encoding: base64
+  content: ${WORKERKEY_PEM}

@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: kube-registry-gui
+  namespace: kube-system
+  labels:
+    k8s-app: kube-registry-gui
+    kubernetes.io/cluster-service: 'true'
+spec:
+  selector:
+    k8s-app: kube-registry-gui
+  ports:
+  - port: 8080
+    targetPort: 80
+    protocol: TCP

@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: api
+    spec:
+      volumes:
+      - name: api-secrets
+        secret:
+          secretName: api-secrets
+      containers:
+      - image: localhost:5000/api:latest
+        imagePullPolicy: Always
+        name: api
+        env:
+        - name: NODE_ENV
+          value: 'acceptance'
+        - name: DOMAIN
+          value: 'http://acc-app.your.com'
+        - name: APP_MONGO_HOST
+          value: 'mongo'
+        - name: DEBUG
+          value: 'api:*'
+        # - name: TESTMODE
+        #   value: '1'
+        volumeMounts:
+        - name: api-secrets
+          mountPath: /etc/secrets
+          readOnly: true
+        ports:
+        - containerPort: 5001
+          name: api-server

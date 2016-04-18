@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: registry-ssl-proxy
+  namespace: kube-system
+  labels:
+    name: registry
+    role: ssl-proxy
+spec:
+  replicas: 1
+  selector:
+    name: registry
+    role: ssl-proxy
+  template:
+    metadata:
+      name: registry-ssl-proxy
+      labels:
+        name: registry
+        role: ssl-proxy
+    spec:
+      containers:
+      - name: registry-ssl-proxy
+        image: nginx:latest
+        env:
+        - name: SERVICE_HOST_ENV_NAME
+          value: 'KUBE_REGISTRY_SERVICE_HOST'
+        - name: SERVICE_PORT_ENV_NAME
+          value: 'KUBE_REGISTRY_SERVICE_PORT'
+        - name: ENABLE_SSL
+          value: 'true'
+        - name: ENABLE_BASIC_AUTH
+          value: 'true'
+        ports:
+        - name: ssl-proxy-https
+          containerPort: 443
+        volumeMounts:
+        - name: ssl-secrets-registry
+          mountPath: /etc/secrets
+          readOnly: true
+        - name: ssl-secrets-registry
+          mountPath: /etc/nginx
+          readOnly: true
+      volumes:
+      - name: ssl-secrets-registry
+        secret:
+          secretName: ssl-secrets-registry

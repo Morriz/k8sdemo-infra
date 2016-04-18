@@ -1,0 +1,24 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-ssl-proxy
+  labels:
+    name: nginx
+    role: ssl-proxy
+    dns: route53
+  annotations:
+    domainName: 'app.your.com'
+spec:
+  type: LoadBalancer
+  ports:
+  - name: https
+    port: 443
+    targetPort: ssl-proxy-https
+    protocol: TCP
+  - name: http
+    port: 80
+    targetPort: ssl-proxy-http
+    protocol: TCP
+  selector:
+    name: nginx
+    role: ssl-proxy

@@ -1,0 +1,8 @@
+alias k="kubectl"
+alias ka="kubectl --all-namespaces=true"
+alias ks="kubectl --namespace=kube-system"
+alias kcv="kubectl config view"
+alias kcg="kubectl config view | grep 'current-context:' | sed -n -e 's/^.*current-context: //p'"
+alias kcu="kubectl config use-context"
+alias kp="kubectl proxy &"
+alias kk="killall kubectl"

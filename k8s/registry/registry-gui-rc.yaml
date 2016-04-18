@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: kube-registry-gui
+  namespace: kube-system
+  labels:
+    k8s-app: kube-registry-gui
+    role: gui
+spec:
+  replicas: 1
+  selector:
+    k8s-app: kube-registry-gui
+    role: gui
+  template:
+    metadata:
+      name: kube-registry-gui
+      labels:
+        k8s-app: kube-registry-gui
+        role: gui
+    spec:
+      containers:
+      - name: kube-registry-gui
+#        image: hyper/docker-registry-web
+        image: morriz/docker-registry-frontend:v2
+        imagePullPolicy: 'Always'
+        env:
+        - name: ENV_DOCKER_REGISTRY_HOST
+          value: 'kube-registry-v2'
+        - name: ENV_DOCKER_REGISTRY_PORT
+          value: '5000'
+        - name: BASEPATH
+          value: '/api/v1/proxy/namespaces/kube-system/services/kube-registry-gui/'
+#        - name: REGISTRY_HOST
+#          value: 'kube-registry-v2'
+#        - name: REGISTRY_PORT
+#          value: '5000'
+        ports:
+        - name: registry-gui
+          containerPort: 80
+          protocol: TCP
