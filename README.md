@@ -1,4 +1,6 @@
-# Infra as code
+# K8S infra as code
+
+This setup is inspired by, and uses parts of the kube-aws scripts from the CoreOS crew.
 
 All infra is hosted by AWS. We use the following stack, and in this particular order:
 
