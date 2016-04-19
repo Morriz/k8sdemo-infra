@@ -14,6 +14,14 @@ variable "ami" {
   default = "ami-9db652f2"
 }
 
+variable "controller-size-acc" {
+  default = "m3.medium"
+}
+
+variable "controller-size-prod" {
+  default = "m3.medium"
+}
+
 variable "worker-size-acc" {
   default = "c4.large"
 }

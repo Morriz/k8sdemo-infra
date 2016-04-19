@@ -2,7 +2,7 @@ resource "aws_instance" "controller-acc" {
   ami = "${var.ami}"
   availability_zone = "${var.az-main}"
   ebs_optimized = false
-  instance_type = "t2.small"
+  instance_type = "${var.controller-size-acc}"
   monitoring = false
   // key_name not needed, since they're baked into cloud config user_data,
   // but you can set it if you're the one
@@ -31,7 +31,7 @@ resource "aws_instance" "controller-prod" {
   ami = "${var.ami}"
   availability_zone = "${var.az-main}"
   ebs_optimized = false
-  instance_type = "t2.small"
+  instance_type = "${var.controller-size-prod}"
   monitoring = false
   // key_name not needed, since they're baked into cloud config user_data,
   // but you can set it if you're the one
