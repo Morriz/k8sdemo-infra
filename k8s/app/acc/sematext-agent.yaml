@@ -9,7 +9,8 @@ spec:
         app: sematext-agent
       name: sematext-agent
     spec:
-      selector: {}
+      nodeSelector:
+        app: sematext-agent
       dnsPolicy: 'ClusterFirst'
       restartPolicy: 'Always'
       containers:
@@ -18,9 +19,9 @@ spec:
         imagePullPolicy: 'Always'
         env:
         - name: SPM_TOKEN
-          value: 'f10745e2-7a7c-4d49-8170-1c2803b5963c'
+          value: ''
         - name: LOGSENE_TOKEN
-          value: '43bb1bb7-3451-427a-a090-b2b948a40c60'
+          value: ''
         - name: KUBERNETES
           value: '1'
         volumeMounts:
