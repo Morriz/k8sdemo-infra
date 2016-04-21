@@ -1,7 +1,7 @@
 resource "aws_ebs_volume" "mongo-acc" {
   availability_zone = "${var.az-main}"
   size = 1
-  type = "standard"
+  type = "gp2"
   tags {
     Name = "mongo-acc"
   }
@@ -10,7 +10,7 @@ resource "aws_ebs_volume" "mongo-acc" {
 resource "aws_ebs_volume" "mongo-prod" {
   availability_zone = "${var.az-main}"
   size = 5
-  type = "standard"
+  type = "gp2"
   tags {
     Name = "mongo-prod"
   }
