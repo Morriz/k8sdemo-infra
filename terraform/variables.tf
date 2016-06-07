@@ -31,11 +31,11 @@ variable "worker-size-prod" {
 }
 
 variable "k8s-ver-acc" {
-  default = "v1.2.2"
+  default = "v1.2.4"
 }
 
 variable "k8s-ver-prod" {
-  default = "v1.2.2"
+  default = "v1.2.4"
 }
 
 variable "az-main" {
